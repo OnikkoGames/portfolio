@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kaoruko Kito | UI/UX Designer &amp; Front-end Engineer Portfolio</title>
+  <meta name="description" content="インハウスUI/UXデザイナー兼フロントエンドエンジニア 鬼頭薫子のポートフォリオ。">
+  <meta name="theme-color" content="#38bdf8">
+  <meta property="og:title" content="Kaoruko Kito | UI/UX Portfolio">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <span class="orb orb--1"></span>
+    <span class="orb orb--2"></span>
+    <span class="orb orb--3"></span>
+  </div>
+  <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
+
+  <!-- ページ本体は js/render.js が js/content.js から生成します -->
+  <div id="app">
+    <noscript>
+      <div class="noscript">
+        <h1>Kaoruko Kito — UI/UX Designer &amp; Front-end Engineer</h1>
+        <p>このポートフォリオの表示には JavaScript が必要です。</p>
+      </div>
+    </noscript>
+  </div>
+
+  <script src="js/content.js"></script>
+  <script src="js/render.js"></script>
+</body>
+</html>
