@@ -1,0 +1,86 @@
+/* =========================================================================
+   DESIGN TOKENS  ―  Luminous Cyan Minimal（DESIGN.md 準拠）
+   色・フォント・余白・角丸・ガラス表現はここだけを編集すれば全体に反映されます
+   ========================================================================= */
+:root {
+  /* ---- Colors ---- */
+  --c-primary: #38bdf8;            /* Sky Blue : アクション/アクティブ/グラデ */
+  --c-primary-strong: #00668a;     /* 小さな文字・ラベル用（コントラスト確保） */
+  --c-primary-deep: #004965;
+  --c-secondary: #0f172a;          /* Deep Slate : 本文・重い要素 */
+  --c-ink: #0f172a;
+  --c-ink-soft: #1e293b;
+  --c-ink-mute: #475569;
+  --c-tertiary: #7dd3fc;           /* Light Cyan : グロー/補助 */
+  --c-surface: #f0f9ff;            /* Icy Tint */
+  --c-white: #ffffff;
+  --c-error: #ba1a1a;
+
+  --c-line: rgba(56, 189, 248, 0.2);        /* ヘアライン */
+  --c-line-soft: rgba(56, 189, 248, 0.15);
+
+  --bg-canvas: linear-gradient(135deg, #7dd3fc 0%, #e0f2fe 45%, #ffffff 100%);
+  --grad-accent: linear-gradient(120deg, #00668a 0%, #38bdf8 60%, #7dd3fc 100%);
+
+  /* ---- Typography ---- */
+  --ff-display: "Anton", "Noto Sans JP", sans-serif;
+  --ff-body: "Inter", "Noto Sans JP", system-ui, -apple-system, "Hiragino Sans", sans-serif;
+
+  --fs-display-hero: clamp(3.5rem, 12vw, 10.5rem);   /* 56px → 〜168px */
+  --lh-display-hero: 0.94;
+  --fs-headline-lg: clamp(2rem, 4.2vw, 3rem);        /* 32px → 48px */
+  --fs-headline-md: 1.5rem;                          /* 24px */
+  --fs-title-sm: 1.125rem;
+  --fs-body-lg: 1.125rem;                            /* 18px */
+  --fs-body-md: 0.9375rem;                           /* 15px */
+  --fs-body-sm: 0.8125rem;                           /* 13px */
+  --fs-label-meta: 0.75rem;                          /* 12px */
+  --fs-label-badge: 0.6875rem;                       /* 11px */
+
+  --ls-meta: 0.12em;
+  --ls-badge: 0.08em;
+
+  /* ---- Radius ---- */
+  --r-sm: 0.25rem;
+  --r-default: 0;
+  --r-md: 0.75rem;
+  --r-lg: 1rem;
+  --r-xl: 1.5rem;
+  --r-full: 9999px;
+
+  /* ---- Spacing ---- */
+  --gutter: 1.5rem;
+  --margin: 1.25rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.75rem;
+  --space-xl: 3rem;
+  --section-gap: clamp(6rem, 12vw, 10rem);           /* space-xl の倍以上の余白 */
+  --container-max: 1280px;
+
+  /* ---- Glass ---- */
+  --glass-1-bg: rgba(255, 255, 255, 0.65);
+  --glass-1-blur: blur(16px);
+  --glass-1-border: 1px solid rgba(255, 255, 255, 0.8);
+  --glass-1-shadow: 0 8px 32px -4px rgba(56, 189, 248, 0.08);
+
+  --glass-2-bg: rgba(255, 255, 255, 0.82);
+  --glass-2-blur: blur(24px);
+  --glass-2-border: 1px solid rgba(255, 255, 255, 0.95);
+  --glass-2-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.06), 0 0 12px 0 rgba(56, 189, 248, 0.15);
+
+  --edge-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 200ms;
+  --dur-reveal: 800ms;
+}
+
+@media (min-width: 768px) {
+  :root { --gutter: 2rem; --margin: 2rem; }
+}
+@media (min-width: 1200px) {
+  :root { --gutter: 2.5rem; --margin: 4rem; }
+}
