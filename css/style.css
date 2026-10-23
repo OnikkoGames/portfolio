@@ -89,7 +89,7 @@ strong { font-weight: 700; color: var(--c-ink); }
 }
 .nav__logo { font-family: var(--ff-display); font-size: 1.15rem; letter-spacing: 0.06em; padding-right: 0.5rem; white-space: nowrap; }
 .nav__logo span { color: var(--c-primary); }
-.nav__list { display: flex; gap: 0.15rem; overflow-x: auto; scrollbar-width: none; }
+.nav__list { display: flex; gap: 0.15rem; overflow: visible; }
 .nav__list::-webkit-scrollbar { display: none; }
 .nav__link {
   font-size: var(--fs-label-meta); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
@@ -98,6 +98,82 @@ strong { font-weight: 700; color: var(--c-ink); }
 }
 .nav__link:hover { background: rgba(56, 189, 248, 0.12); }
 .nav__link.is-active { background: var(--c-primary); color: var(--c-white); box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35); }
+
+/* ---------- Chapter navigation dropdown ---------- */
+.nav__item { position: relative; }
+.nav__link { display: inline-flex; align-items: center; gap: 0.3rem; }
+.nav__caret { font-size: 0.65rem; opacity: 0.7; transition: transform var(--dur) var(--ease); }
+.nav__item--has-sub:hover .nav__caret,
+.nav__item--has-sub:focus-within .nav__caret { transform: rotate(180deg); }
+.nav__sub {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  min-width: 14.5rem;
+  padding: 0.45rem;
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease), visibility 200ms;
+  z-index: 70;
+}
+.nav__sub::before {
+  content: "";
+  position: absolute;
+  top: -0.75rem;
+  left: 0;
+  right: 0;
+  height: 0.75rem;
+}
+.nav__item--has-sub:hover .nav__sub,
+.nav__item--has-sub:focus-within .nav__sub {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.nav__sublink {
+  display: block;
+  padding: 0.55rem 0.85rem;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-label-meta);
+  font-weight: 600;
+  color: var(--c-ink-soft);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), padding-left var(--dur) var(--ease);
+}
+.nav__sublink:hover {
+  background: rgba(56, 189, 248, 0.14);
+  color: var(--c-primary-deep);
+  padding-left: 1.1rem;
+}
+.nav__sublink.is-active {
+  background: rgba(56, 189, 248, 0.22);
+  color: var(--c-primary-strong);
+  font-weight: 700;
+}
+@media (max-width: 767px) {
+  .nav { width: calc(100vw - 1.5rem); }
+  .nav__list {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
+    column-gap: 0.15rem;
+    justify-items: center;
+  }
+}
+@media (max-width: 359px) {
+  .nav__sub { min-width: 12rem; max-width: 12rem; }
+  .nav__sublink { white-space: normal; }
+}
 
 /* ---------- Hero ---------- */
 .hero {
@@ -173,9 +249,12 @@ strong { font-weight: 700; color: var(--c-ink); }
 
 /* ---------- Tool groups ---------- */
 .tools { display: grid; gap: var(--gutter); grid-template-columns: 1fr; }
-.tool-group { padding: var(--space-lg); }
-.tool-group__name { margin-bottom: var(--space-md); }
-.tool-group__items { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.tool-group { padding-block: 0.65rem; border-bottom: 1px solid var(--c-line-soft); }
+.tool-group:last-child { border-bottom: 0; }
+.tool-group__name { margin-bottom: 0.35rem; }
+.tool-group__items { display: grid; justify-items: start; gap: 0.15rem; color: var(--c-ink-soft); font-size: var(--fs-body-sm); line-height: 1.65; }
+.tool-group__items li { position: relative; padding-left: 1rem; }
+.tool-group__items li::before { content: "•"; position: absolute; left: 0; color: var(--c-primary-strong); }
 
 /* ---------- Generic cards ---------- */
 .card-grid { display: grid; gap: var(--gutter); grid-template-columns: 1fr; }
@@ -209,6 +288,11 @@ strong { font-weight: 700; color: var(--c-ink); }
 .chapter-head__title { font-size: clamp(1.75rem, 4.4vw, 3.25rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.25; margin-top: var(--space-sm); }
 .chapter-hero { margin-top: var(--space-xl); border-radius: var(--r-lg); overflow: hidden; padding: 0.5rem; }
 .chapter-hero img { width: 100%; border-radius: var(--r-md); }
+.chapter-hero__credit,
+.chapter-toc__credit { color: var(--c-ink-mute); font-size: var(--fs-label-meta); line-height: 1.6; }
+.chapter-hero__credit { padding: 0.55rem 0.4rem 0.15rem; text-align: right; }
+.chapter-hero__credit a,
+.chapter-toc__credit a { text-decoration: underline; text-underline-offset: 0.18em; }
 
 /* ---------- Approach ---------- */
 .approach { display: grid; gap: var(--gutter); }
@@ -276,6 +360,94 @@ strong { font-weight: 700; color: var(--c-ink); }
 }
 .gallery .figure:not(:last-child)::before {
   content: ""; position: absolute; left: 50%; bottom: 3rem; height: 0.75rem; width: 1px; background: var(--c-primary); opacity: 0.5;
+}
+/* =========================================================================
+   差し替え用：矢印なしレイアウト各種 ＆ Case 2 画像トリミング調整
+   ========================================================================= */
+
+/* パターンA（"no-arrow"）：通常の縦1列並びで「下矢印アイコン」だけを消すバージョン */
+.gallery--no-arrow {
+  gap: var(--space-xl);
+}
+.gallery--no-arrow .figure:not(:last-child) {
+  padding-bottom: 0;
+}
+.gallery--no-arrow .figure::before,
+.gallery--no-arrow .figure::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* パターンB（"grid"）：2列のカード風に並べて「下矢印アイコン」を消すバージョン */
+.gallery--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-lg);
+  align-items: start;
+}
+.gallery--grid .figure:not(:last-child) {
+  padding-bottom: 0;
+}
+.gallery--grid .figure::before,
+.gallery--grid .figure::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* パターンC（"nav"）：Case 2 専用（左：縦長ナビ全体1枚 ＋ 右：部分キャプチャ2枚縦積み・矢印なし） */
+.gallery--nav {
+  display: grid;
+  grid-template-columns: minmax(150px, 36%) minmax(0, 1fr);
+  gap: var(--space-lg);
+  align-items: start;
+}
+.gallery--nav .figure:first-child {
+  grid-row: span 2;
+}
+.gallery--nav .figure:not(:last-child) {
+  padding-bottom: 0;
+}
+.gallery--nav .figure::before,
+.gallery--nav .figure::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* ▼ トリミング調整①：左カラム（Before① / After① サイドナビ全体） */
+.gallery--nav .figure:first-child .figure__frame {
+  overflow: hidden;
+}
+.gallery--nav .figure:first-child .figure__frame img {
+  width: 100%;
+  max-height: 36rem;
+  object-fit: contain;
+  object-position: top center;
+  background: #f8fafc;
+}
+
+/* ▼ トリミング調整②：右カラム（Before②③ / After②③ 部分クローズアップ2枚） */
+.gallery--nav .figure:not(:first-child) .figure__frame {
+  overflow: hidden;
+}
+.gallery--nav .figure:not(:first-child) .figure__frame img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: left top;
+  background: #f8fafc;
+}
+
+@media (max-width: 639px) {
+  .gallery--nav {
+    grid-template-columns: 1fr;
+  }
+  .gallery--nav .figure:first-child {
+    grid-row: auto;
+  }
+  .gallery--nav .figure:first-child .figure__frame {
+    max-width: 16rem;
+    margin-inline: auto;
+  }
 }
 .figure__frame {
   position: relative; border-radius: var(--r-md); overflow: hidden; padding: 0.35rem;
@@ -407,7 +579,7 @@ strong { font-weight: 700; color: var(--c-ink); }
   .split { grid-template-columns: 4fr 8fr; }
   .split--wide { grid-template-columns: 5fr 7fr; }
   .row { grid-template-columns: 12rem 1fr; }
-  .row--skill { grid-template-columns: 3.5rem 15rem 1fr; }
+  .row--skill { grid-template-columns: 3.5rem 1fr; }
   .tools { grid-template-columns: repeat(3, 1fr); }
   .card-grid { grid-template-columns: repeat(2, 1fr); }
   .card-grid--3 { grid-template-columns: repeat(2, 1fr); }
@@ -451,4 +623,2755 @@ strong { font-weight: 700; color: var(--c-ink); }
   .glass { backdrop-filter: none; box-shadow: none; }
   .section { padding-top: 2.5rem; break-inside: auto; }
   .stage, .card, .solution { break-inside: avoid; }
+}
+/* =========================================================================
+   Chapter 2 Extensions: App Header / Rating Chart / Before-After / Reviews
+   ========================================================================= */
+
+/* ---------- Stats 4カラム対応 ---------- */
+@media (min-width: 768px) {
+  .stats--4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1200px) {
+  .stats--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ---------- App Header（アプリアイコン＋ストア評価カード） ---------- */
+.app-header {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+.app-header__main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  flex: 1 1 28rem;
+}
+.app-header__icon {
+  width: clamp(4.5rem, 8vw, 6rem);
+  height: clamp(4.5rem, 8vw, 6rem);
+  border-radius: 22%; /* iOSアプリアイコン風の角丸 */
+  object-fit: cover;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+  background: var(--c-secondary);
+}
+.app-header__icon--dummy {
+  display: grid;
+  place-items: center;
+  font-family: var(--ff-display);
+  color: var(--c-white);
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+}
+.app-header__info {
+  display: grid;
+  gap: 0.45rem;
+}
+.app-header__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.app-header__title {
+  font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+.app-header__sub {
+  font-size: var(--fs-body-sm);
+  color: var(--c-ink-mute);
+}
+.app-header__side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+.app-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+}
+.app-rating__score {
+  font-family: var(--ff-display);
+  font-size: 2.75rem;
+  line-height: 1;
+  background: var(--grad-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.app-rating__stars {
+  color: #f59e0b; /* ゴールドスター */
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+}
+.app-rating__count {
+  font-size: var(--fs-label-meta);
+  font-weight: 600;
+  color: var(--c-ink-mute);
+  margin-top: 0.2rem;
+}
+.app-header__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+/* ---------- Rating Transition Chart（★評価推移グラフ） ---------- */
+.rating-chart {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: grid;
+  gap: var(--space-lg);
+}
+.rc-row {
+  display: grid;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  grid-template-columns: 1fr;
+  align-items: center;
+}
+.rc-row--highlight {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--c-primary);
+  box-shadow: 0 12px 32px -8px rgba(56, 189, 248, 0.22);
+}
+.rc-row__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.rc-row__ver {
+  font-family: var(--ff-display);
+  font-size: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  color: var(--c-ink);
+}
+.rc-row--highlight .rc-row__ver {
+  color: var(--c-primary-strong);
+}
+.rc-row__period {
+  font-size: var(--fs-label-meta);
+  color: var(--c-ink-mute);
+  font-weight: 600;
+}
+.rc-row__bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.rc-row__track {
+  width: 100%;
+  height: 0.75rem;
+  border-radius: var(--r-full);
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+.rc-row__fill {
+  height: 100%;
+  border-radius: var(--r-full);
+  background: linear-gradient(90deg, #64748b, #94a3b8);
+  transition: width 1s var(--ease);
+}
+.rc-row--highlight .rc-row__fill {
+  background: var(--grad-accent);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+}
+.rc-row__score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+.rc-row__star {
+  color: #f59e0b;
+  font-size: 1.1rem;
+}
+.rc-row__num {
+  font-family: var(--ff-display);
+  font-size: 1.65rem;
+  line-height: 1;
+}
+.rc-row__status {
+  margin-left: 0.4rem;
+  padding: 0.15rem 0.65rem;
+  border-radius: var(--r-full);
+  font-size: var(--fs-label-badge);
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--c-ink-soft);
+}
+.rc-row--highlight .rc-row__status {
+  background: var(--c-primary);
+  color: var(--c-white);
+}
+.rc-row__title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.rc-row__body {
+  font-size: var(--fs-body-sm);
+  color: var(--c-ink-mute);
+  line-height: 1.8;
+}
+@media (min-width: 960px) {
+  .rc-row {
+    grid-template-columns: 11rem 14rem 1fr;
+    gap: var(--space-lg);
+  }
+}
+
+/* ---------- Solutions Before / Action / After ボックス ---------- */
+.solution__changes {
+  margin-top: var(--space-lg);
+  display: grid;
+  gap: var(--space-sm);
+}
+.sol-change {
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  display: grid;
+  gap: 0.4rem;
+  justify-items: start;
+}
+.sol-change--before   { border-left: 3px solid rgba(15, 23, 42, 0.45); }
+.sol-change--approach { border-left: 3px solid var(--c-tertiary); }
+.sol-change--after    { border-left: 3px solid var(--c-primary); background: rgba(255, 255, 255, 0.82); }
+.sol-change__text {
+  font-size: var(--fs-body-sm);
+  color: var(--c-ink-soft);
+  line-height: 1.85;
+}
+
+/* ---------- User Reviews（レビューカード） ---------- */
+.review-card {
+  justify-content: space-between;
+}
+.review-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.review-card__stars {
+  color: #f59e0b;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
+.review-card__meta {
+  font-size: var(--fs-label-badge);
+  font-weight: 600;
+  color: var(--c-ink-mute);
+}
+.review-card__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+.review-card__body {
+  font-size: var(--fs-body-sm);
+  color: var(--c-ink-soft);
+  line-height: 1.85;
+  flex: 1;
+}
+.review-card__reply {
+  margin-top: var(--space-xs);
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--r-md);
+  background: rgba(240, 249, 255, 0.85);
+  border-left: 2px solid var(--c-primary);
+}
+.review-card__reply-label {
+  display: block;
+  font-size: var(--fs-label-badge);
+  font-weight: 700;
+  letter-spacing: var(--ls-badge);
+  color: var(--c-primary-strong);
+  margin-bottom: 0.2rem;
+}
+.review-card__reply-text {
+  font-size: 0.78rem;
+  color: var(--c-ink-mute);
+  line-height: 1.7;
+}
+
+/* ---------- Background sketch and scroll blur ---------- */
+.ambient__sketch {
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/images/bg_sketch.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.24;
+  filter: blur(0);
+  transform: scale(1);
+  transition: filter 600ms var(--ease), opacity 600ms var(--ease), transform 800ms var(--ease);
+}
+body.is-bg-blurred .ambient__sketch {
+  filter: blur(6px);
+  opacity: 0.15;
+  transform: scale(1.03);
+}
+.glass--blur-area {
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+}
+
+/* ---------- Sticky navigation after profile ---------- */
+.nav-sticky-wrap {
+  position: sticky;
+  top: 1rem;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding-inline: var(--margin);
+  pointer-events: none;
+}
+.nav-sticky-wrap .nav {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  pointer-events: auto;
+  transition: box-shadow 300ms var(--ease), background 300ms var(--ease), transform 300ms var(--ease);
+}
+.nav-sticky-wrap.is-stuck .nav {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16px 40px -8px rgba(15, 23, 42, 0.12), 0 0 16px rgba(56, 189, 248, 0.22);
+}
+
+/* ---------- Compact profile slides and strengths ---------- */
+.profile-slider {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  overflow: hidden;
+}
+.profile-slider__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--c-line);
+}
+.profile-slider__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1rem;
+  align-items: center;
+}
+.profile-tab {
+  appearance: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: var(--c-ink-mute);
+  font-family: var(--ff-body);
+  font-size: var(--fs-label-meta);
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0.35rem 0.05rem;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.profile-tab:hover { color: var(--c-primary-deep); }
+.profile-tab.is-active {
+  border-color: var(--c-primary);
+  color: var(--c-primary-deep);
+  font-weight: 700;
+}
+.profile-slider__track {
+  display: flex;
+  gap: var(--space-xl);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.profile-slider__track::-webkit-scrollbar { display: none; }
+.profile-slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  max-height: none;
+  overflow-y: visible;
+  padding: 0 0.25rem 0.25rem 0;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.profile-slide__title {
+  margin-bottom: var(--space-md);
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+.profile-slide__content { display: grid; gap: clamp(1.5rem, 3vw, 2rem); }
+.profile-slide__paragraphs { display: grid; gap: 0.75rem; }
+.profile-slide__section-title {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.profile-slide .body-lg { font-size: var(--fs-body-md); line-height: 1.8; }
+.profile-slide .row__title { font-size: 1rem; }
+.profile-slide .row__body { font-size: var(--fs-body-sm); }
+.profile-slide .card__title { font-size: 1rem; }
+.profile-slide .card__body { font-size: var(--fs-body-sm); }
+.profile-tools {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.profile-tools__group {
+  min-width: 0;
+  padding: 0 0.8rem;
+  border: 0;
+  border-left: 1px solid var(--c-line-soft);
+}
+.profile-tools__group:first-child { padding-left: 0; border-left: 0; }
+.profile-tools__group .tool-group__name { min-height: 2.4em; font-size: 0.62rem; line-height: 1.3; }
+.profile-tools__group .tool-group__items { font-size: 0.68rem; line-height: 1.55; }
+.strength-split {
+  display: grid;
+  gap: var(--gutter);
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+.strength-box { min-width: 0; padding: clamp(1.25rem, 3vw, 2.25rem); }
+.perspectives-stack { display: grid; gap: var(--space-md); }
+.perspective-card__head { display: flex; align-items: baseline; gap: 0.75rem; }
+.perspective-card__head .card__index { flex: 0 0 auto; font-size: 1.75rem; }
+.perspective-card__head .card__title { min-width: 0; }
+.nav-sticky-wrap { scroll-margin-top: 1rem; }
+
+@media (min-width: 960px) {
+  .strength-split { grid-template-columns: 1.15fr 0.85fr; }
+}
+@media (max-width: 639px) {
+  .profile-slider__head { align-items: flex-start; }
+  .profile-slider__tabs { gap: 0.15rem 0.8rem; }
+  .profile-tab { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient__sketch,
+  .profile-slider__track { scroll-behavior: auto; transition: none; }
+}
+
+/* ---------- Horizontal story panels ---------- */
+.profile-slider__track,
+.approach {
+  scroll-padding-inline: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.profile-slide {
+  max-height: none;
+  overflow-y: visible;
+  overscroll-behavior-y: contain;
+}
+.profile-slide__paragraphs > .rows { margin-top: var(--space-lg); }
+.profile-slide__content { gap: clamp(1.25rem, 2.5vw, 1.75rem); }
+.profile-slide__paragraphs { gap: 0.55rem; }
+.profile-slide__background { min-width: 0; }
+.profile-slide__section-title { margin-bottom: 0.35rem; }
+.profile-history {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.72fr) minmax(0, 0.62fr);
+  align-items: stretch;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+}
+.profile-history__timeline {
+  --history-date-width: 5.6rem;
+  --history-column-gap: 0.9rem;
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0;
+  grid-column: 1;
+  list-style: none;
+}
+.profile-history__timeline::before {
+  content: "";
+  position: absolute;
+  top: 0.9rem;
+  bottom: 0.9rem;
+  left: calc(var(--history-date-width) + var(--history-column-gap) / 2);
+  width: 1px;
+  background: var(--c-line);
+}
+.profile-history__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--history-date-width) minmax(0, 1fr);
+  column-gap: var(--history-column-gap);
+  align-content: start;
+  min-width: 0;
+  padding-block: 0.35rem;
+}
+.profile-history__item::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--history-date-width) + var(--history-column-gap) / 2);
+  top: 0.68rem;
+  width: 0.42rem;
+  height: 0.42rem;
+  border: 1px solid var(--c-primary);
+  border-radius: 50%;
+  background: var(--bg-canvas);
+  transform: translateX(-50%);
+}
+.profile-history__meta {
+  grid-column: 1;
+  grid-row: 1;
+  padding-right: 0.1rem;
+  text-align: left;
+  color: var(--c-ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.profile-history__entry {
+  grid-column: 2;
+  min-width: 0;
+  padding-left: 0.3rem;
+}
+.profile-history__title {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.profile-history__body {
+  margin: 0.15rem 0 0;
+  color: var(--c-ink-mute);
+  font-size: 0.72rem;
+  line-height: 1.5;
+}
+.profile-history__item--quiet .profile-history__meta {
+  color: var(--c-ink-mute);
+  font-size: 0.64rem;
+  font-weight: 500;
+}
+.profile-history__item--quiet .profile-history__title {
+  color: var(--c-ink-mute);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+.approach-slider { position: relative; }
+.approach {
+  display: flex;
+  gap: var(--gutter);
+  overflow-x: auto;
+  padding: 0.25rem 0.1rem 0.75rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.approach::-webkit-scrollbar { display: none; }
+.approach__item {
+  flex: 0 0 min(100%, 52rem);
+  min-width: 0;
+  align-content: start;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+.scroll-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: var(--space-md);
+}
+.scroll-controls__count {
+  margin-right: auto;
+  color: var(--c-ink-mute);
+  font-family: var(--ff-display);
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+.scroll-controls__button {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--c-line);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.scroll-controls__button:hover:not(:disabled) {
+  background: var(--c-primary);
+  color: var(--c-white);
+  transform: translateX(2px);
+}
+.scroll-controls__button:disabled { opacity: 0.35; cursor: default; }
+
+/* ---------- Chapter contents ---------- */
+.chapter-toc {
+  display: grid;
+  gap: var(--space-md);
+  margin-block: var(--space-xl);
+  padding-block: 0.5rem;
+}
+.chapter-toc__credit { margin-top: 0.25rem; }
+.chapter-toc__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem 1rem;
+}
+.chapter-toc__link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.1rem;
+  border-bottom: 1px solid transparent;
+  color: var(--c-ink-soft);
+  font-size: var(--fs-label-meta);
+  font-weight: 500;
+  line-height: 1.45;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.chapter-toc__link:hover {
+  border-color: var(--c-primary);
+  color: var(--c-primary-deep);
+}
+.chapter-toc__num {
+  color: var(--c-ink-mute);
+  font-family: var(--ff-display);
+  font-size: 0.9rem;
+}
+.chapter-toc__sublist {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0 0 0.35rem 1.6rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--c-line-soft);
+}
+.chapter-toc__sublink {
+  display: inline-block;
+  padding: 0.35rem 0.1rem;
+  border-bottom: 1px solid transparent;
+  color: var(--c-ink-mute);
+  font-size: var(--fs-label-meta);
+  line-height: 1.45;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.chapter-toc__sublink:hover {
+  border-color: var(--c-primary);
+  color: var(--c-primary-deep);
+}
+.chapter-toc__arrow { display: none; }
+.chapter-toc--section { margin-top: calc(var(--space-xl) * -1); }
+.case, [id^="ch1-"], [id^="ch2-"] { scroll-margin-top: 6rem; }
+
+@media (max-width: 767px) {
+  .approach__item { flex-basis: 88%; }
+  .chapter-toc__list { grid-template-columns: 1fr; }
+  .chapter-toc__link { min-height: 2.75rem; }
+  .profile-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 0.6rem; }
+  .profile-tools__group { padding-inline: 0.6rem; }
+  .profile-tools__group:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .profile-tools__group:nth-child(even) { border-left: 1px solid var(--c-line-soft); }
+  .profile-tools__group:nth-child(n + 3) { padding-top: 0.75rem; border-top: 1px solid var(--c-line-soft); }
+  .profile-tools__group .tool-group__name { min-height: 0; }
+  .profile-history { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+  .profile-history__timeline { --history-date-width: 5.6rem; --history-column-gap: 0.9rem; grid-column: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .approach { scroll-behavior: auto; }
+}
+
+/* ---------- Editorial sitemap and persistent section navigation ---------- */
+.site-map-section {
+  padding-block: clamp(3rem, 7vw, 6rem) clamp(2rem, 4vw, 3.5rem);
+  border-top: 1px solid var(--c-line);
+  background: rgba(255, 255, 255, 0.3);
+}
+.site-map__heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-bottom: var(--space-xl);
+}
+.site-map__title { font-size: 1.35rem; line-height: 1.3; }
+.site-map {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem 1.1rem;
+}
+.site-map__column {
+  min-width: 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--c-line);
+}
+.site-map__column-title {
+  margin: 0 0 0.45rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.site-map__column-title a { display: flex; align-items: baseline; gap: 0.35rem; }
+.site-map__column-title a,
+.sitemap-link {
+  color: var(--c-ink);
+  text-decoration: none;
+  text-underline-offset: 0.2em;
+  transition: color var(--dur) var(--ease), text-decoration-color var(--dur) var(--ease);
+}
+.site-map__column-title a:hover,
+.sitemap-link:hover {
+  color: var(--c-primary-deep);
+  text-decoration: underline;
+}
+.sitemap-link__index {
+  display: inline-block;
+  min-width: 1.8rem;
+  color: var(--c-ink-mute);
+  font-family: var(--ff-display);
+  font-size: 0.78rem;
+  font-weight: 400;
+  vertical-align: 0.05em;
+}
+.sitemap-note {
+  margin: 0.15rem 0 0.45rem 1.8rem;
+  color: var(--c-primary-deep);
+  font-size: 0.7rem;
+  line-height: 1.55;
+  opacity: 0.82;
+}
+.sitemap-note--main { margin-left: 0; margin-bottom: 0.75rem; }
+.sitemap-list { display: grid; gap: 0.3rem; list-style: none; }
+.sitemap-list--nested {
+  margin: 0.2rem 0 0.55rem 0.45rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--c-line-soft);
+}
+.sitemap-item { min-width: 0; }
+.sitemap-link { display: inline; font-size: 0.75rem; font-weight: 600; line-height: 1.5; }
+.sitemap-item--level-2 > .sitemap-link { font-size: 0.7rem; font-weight: 500; }
+.sitemap-item--level-3 > .sitemap-link { font-size: 0.66rem; font-weight: 500; color: var(--c-ink-soft); }
+.sitemap-nav-wrap {
+  position: sticky;
+  top: 0.65rem;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  margin-block: 0.5rem clamp(2.5rem, 5vw, 4rem);
+  padding-inline: var(--margin);
+  pointer-events: none;
+}
+.sitemap-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  max-width: 100%;
+  padding: 0.35rem;
+  overflow: visible;
+  pointer-events: auto;
+}
+.sitemap-nav__item { position: relative; flex: 0 0 auto; }
+.sitemap-nav__link {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.7rem;
+  border-bottom: 1px solid transparent;
+  border-radius: var(--r-sm);
+  color: var(--c-ink-mute);
+  font-size: var(--fs-label-meta);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.sitemap-nav__link:hover,
+.sitemap-nav__link.is-active {
+  border-color: var(--c-primary);
+  color: var(--c-primary-deep);
+}
+.sitemap-nav__link.is-active { background: rgba(255, 255, 255, 0.65); font-weight: 700; }
+.sitemap-nav__sub {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  z-index: 55;
+  display: none;
+  gap: 0.1rem;
+  min-width: 15rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  max-height: min(70vh, 34rem);
+  overflow: auto;
+  padding: 0.45rem;
+  transform: translate(-50%, -0.35rem);
+  box-shadow: 0 12px 32px -12px rgba(15, 23, 42, 0.3);
+}
+.sitemap-nav__item:hover .sitemap-nav__sub,
+.sitemap-nav__item:focus-within .sitemap-nav__sub {
+  display: grid;
+  transform: translate(-50%, 0);
+}
+.sitemap-nav__sub a {
+  display: block;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--r-sm);
+  color: var(--c-ink-soft);
+  font-size: var(--fs-label-meta);
+  line-height: 1.45;
+}
+.sitemap-nav__sub a:hover,
+.sitemap-nav__sub a.is-active { background: rgba(56, 189, 248, 0.12); color: var(--c-primary-deep); }
+.sitemap-nav__item:first-of-type .sitemap-nav__sub { left: 0; transform: translateY(-0.35rem); }
+.sitemap-nav__item:first-of-type:hover .sitemap-nav__sub,
+.sitemap-nav__item:first-of-type:focus-within .sitemap-nav__sub { transform: translateY(0); }
+.sitemap-nav-wrap:not(.is-stuck) .sitemap-nav { box-shadow: none; }
+.chapter-placeholder {
+  margin: 0 0 var(--space-xl);
+  color: var(--c-ink-mute);
+  font-size: var(--fs-body-sm);
+}
+[id^="profile-"], [id^="perspective-item"], [id^="tool-group"], [id^="ch"], [id^="case-"] { scroll-margin-top: 6rem; }
+
+@media (max-width: 1023px) {
+  .site-map { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .site-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem 0.8rem; }
+  .sitemap-nav { flex-wrap: wrap; justify-content: center; }
+  .sitemap-nav__link { padding-inline: 0.55rem; }
+  .sitemap-nav__item:nth-child(2) .sitemap-nav__sub { left: 50%; right: auto; transform: translate(-50%, -0.35rem); }
+  .sitemap-nav__item:nth-child(2):hover .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(2):focus-within .sitemap-nav__sub { transform: translate(-50%, 0); }
+  .sitemap-nav__item:nth-child(3) .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(4) .sitemap-nav__sub { left: auto; right: 0; transform: translateY(-0.35rem); }
+  .sitemap-nav__item:hover .sitemap-nav__sub,
+  .sitemap-nav__item:focus-within .sitemap-nav__sub { transform: translate(-50%, 0); }
+  .sitemap-nav__item:nth-child(3):hover .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(3):focus-within .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(4):hover .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(4):focus-within .sitemap-nav__sub { transform: translateY(0); }
+}
+@media (max-width: 359px) {
+  .sitemap-nav__item:nth-child(4) .sitemap-nav__sub { left: 0; right: auto; transform: translateY(-0.35rem); }
+  .sitemap-nav__item:nth-child(4):hover .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(4):focus-within .sitemap-nav__sub { transform: translateY(0); }
+  .sitemap-nav__item:nth-child(5) .sitemap-nav__sub { left: auto; right: 0; transform: translateY(-0.35rem); }
+  .sitemap-nav__item:nth-child(5):hover .sitemap-nav__sub,
+  .sitemap-nav__item:nth-child(5):focus-within .sitemap-nav__sub { transform: translateY(0); }
+}
+@media (max-width: 479px) {
+  .site-map { grid-template-columns: 1fr; }
+}
+/* =========================================================================
+   Multi-View Architecture / Top-Right Global Nav / Process Infographics
+   ========================================================================= */
+
+/* ---------- 1. マルチビュー表示制御 ---------- */
+.page-view[hidden] {
+  display: none !important;
+}
+.page-view--chapter {
+  padding-top: clamp(5.5rem, 9vw, 8rem);
+}
+
+/* ---------- 2. 右上固定・紺色シンプルテキストのグローバルナビ ---------- */
+.gnav {
+  position: fixed;
+  top: 1.25rem;
+  right: var(--margin);
+  z-index: 80;
+  pointer-events: none;
+}
+.gnav__bar {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.6rem);
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--r-full);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: background 280ms var(--ease), box-shadow 280ms var(--ease), border-color 280ms var(--ease), padding 280ms var(--ease);
+}
+.gnav__link {
+  font-family: var(--ff-body);
+  font-size: var(--fs-label-meta);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--c-secondary); /* 紺色（#0f172a）のシンプルなテキスト */
+  padding: 0.25rem 0.15rem;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 200ms var(--ease), border-color 200ms var(--ease), opacity 200ms var(--ease);
+}
+.gnav__link:hover {
+  color: var(--c-primary-strong);
+}
+.gnav__link.is-active {
+  color: var(--c-primary-deep);
+  border-bottom-color: var(--c-primary);
+}
+
+/* KVを過ぎてスクロールした後は「白地（.is-solid）」に変化 */
+.gnav.is-solid .gnav__bar {
+  background: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-color: rgba(15, 23, 42, 0.08);
+  padding: 0.55rem 1.35rem;
+  box-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.14);
+}
+
+@media (max-width: 767px) {
+  .gnav {
+    top: 0.75rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .gnav__bar {
+    gap: 0.65rem;
+    padding: 0.45rem 0.85rem;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .gnav__bar::-webkit-scrollbar { display: none; }
+  .gnav__link { font-size: 0.68rem; letter-spacing: 0.06em; }
+}
+
+/* ---------- 3. チャプター飾り数字の新レイアウト（左：数字 ／ 右：タイトル） ---------- */
+.chapter-head--split {
+  margin-bottom: clamp(3rem, 6vw, 4.5rem);
+}
+.chapter-head__banner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: clamp(1.25rem, 3.5vw, 3rem);
+  padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--c-line);
+}
+.chapter-head--split .chapter-head__num {
+  font-size: clamp(4.5rem, 11vw, 8.5rem);
+  line-height: 0.88;
+  -webkit-text-stroke: 1.5px rgba(0, 102, 138, 0.55);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.35), rgba(56, 189, 248, 0.05));
+  -webkit-background-clip: text;
+  background-clip: text;
+  padding-right: clamp(1rem, 2.5vw, 2rem);
+  border-right: 1px solid var(--c-line);
+}
+.chapter-head--split .chapter-head__body {
+  margin-top: 0;
+  padding-left: 0;
+}
+.chapter-head--split .chapter-head__title {
+  font-size: clamp(1.6rem, 3.6vw, 2.75rem);
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 639px) {
+  .chapter-head__banner {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .chapter-head--split .chapter-head__num {
+    font-size: 4.25rem;
+    border-right: 0;
+    padding-right: 0;
+  }
+}
+
+/* ---------- 4. TOPページ下部のチャプター選択カード＆ページャー ---------- */
+/* ---------- 4. TOPページ下部の各Chapter KV横スクロール（アニメーション付き） ---------- */
+.kv-carousel {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.75rem 1.75rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* 左右の端をふわっとフェードさせるマスク表現 */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+.kv-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.kv-carousel__track {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;
+  padding-inline: var(--margin);
+  animation: kvMarquee 32s linear infinite;
+}
+
+/* ホバー中やフォーカス中は自動スクロールを一時停止して選びやすくする */
+.kv-carousel:hover .kv-carousel__track,
+.kv-carousel:focus-within .kv-carousel__track {
+  animation-play-state: paused;
+}
+
+@keyframes kvMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* 個別のKVミニカード */
+.kv-card {
+  width: clamp(220px, 24vw, 290px);
+  flex: 0 0 auto;
+  padding: 0.65rem;
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 350ms var(--ease), border-color 250ms var(--ease), box-shadow 350ms var(--ease);
+}
+.kv-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--c-primary);
+  box-shadow: 0 18px 40px -10px rgba(56, 189, 248, 0.28);
+}
+
+/* KVサムネイル枠（16:10 でコンパクトに統一） */
+.kv-card__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(0, 102, 138, 0.75));
+}
+.kv-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 500ms var(--ease);
+}
+.kv-card:hover .kv-card__img {
+  transform: scale(1.06);
+}
+
+/* 画像未設定チャプター（Ch.3 / Ch.4）用のプレースホルダーKV */
+.kv-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  background: radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.35), rgba(15, 23, 42, 0.85));
+}
+.kv-card__placeholder-num {
+  font-family: var(--ff-display);
+  font-size: 3rem;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.04em;
+}
+.kv-card__placeholder-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--c-tertiary);
+}
+
+/* ホバー時に右下に浮かび上がる「VIEW →」バッジ */
+.kv-card__badge {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.55rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--r-full);
+  background: rgba(15, 23, 42, 0.78);
+  color: var(--c-white);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 250ms var(--ease), transform 250ms var(--ease), background 250ms var(--ease);
+}
+.kv-card:hover .kv-card__badge {
+  opacity: 1;
+  transform: translateY(0);
+  background: var(--c-primary);
+}
+
+/* KV下の「CHAPTER 0X」と「日本語タイトル」 */
+.kv-card__meta {
+  padding: 0 0.35rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.kv-card__chap {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+}
+.kv-card__title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--c-ink);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kv-carousel__track {
+    animation: none;
+  }
+}
+/* ---------- チャプター下部ページャー（背景なしのシンプルテキスト） ---------- */
+.chapter-pager {
+  margin-top: clamp(4.5rem, 8vw, 6.5rem);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--c-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-lg);
+}
+.chapter-pager__btn {
+  padding: 0.25rem 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: opacity 200ms var(--ease), transform 250ms var(--ease);
+}
+.chapter-pager__btn:hover {
+  transform: translateX(-4px);
+}
+.chapter-pager__btn--next {
+  margin-left: auto;
+  text-align: right;
+  align-items: flex-end;
+}
+.chapter-pager__btn--next:hover {
+  transform: translateX(4px);
+}
+.chapter-pager__title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--c-ink);
+  transition: color 200ms var(--ease);
+}
+.chapter-pager__btn:hover .chapter-pager__title {
+  color: var(--c-primary-strong);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+
+/* ---------- 5. テキストブロック（課題セクション等の読みやすさ強化） ---------- */
+.text-block {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+}
+.text-block .body-lg {
+  max-width: 60rem;
+}
+
+/* ---------- 6. Chapter 1 アプローチ＆推進プロセス（インフォグラフィック） ---------- */
+.pv-list {
+  display: grid;
+  gap: var(--gutter);
+}
+.pv-card {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  align-items: center;
+}
+@media (min-width: 960px) {
+  .pv-card {
+    grid-template-columns: 0.9fr 1.3fr;
+  }
+}
+.pv-card__num {
+  font-family: var(--ff-display);
+  font-size: 2.75rem;
+  line-height: 1;
+  color: var(--c-primary);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.pv-card__title {
+  font-size: clamp(1.15rem, 2vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.4;
+}
+.pv-card__summary {
+  margin-top: 0.65rem;
+  font-size: var(--fs-body-sm);
+  color: var(--c-ink-mute);
+  line-height: 1.85;
+}
+
+/* ① 4点セットのステップフロー図 */
+.pv-flow {
+  display: grid;
+  gap: var(--space-md);
+}
+.pv-flow__steps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .pv-flow__steps {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.pv-step {
+  padding: 0.95rem 0.85rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+}
+.pv-step__num {
+  font-family: var(--ff-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--c-primary-strong);
+}
+.pv-step__name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--c-ink);
+}
+.pv-step__detail {
+  font-size: 0.75rem;
+  color: var(--c-ink-mute);
+  line-height: 1.5;
+}
+.pv-flow__outcome {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--r-md);
+  background: rgba(240, 249, 255, 0.9);
+  border-left: 3px solid var(--c-primary);
+}
+.pv-flow__outcome-text {
+  font-size: var(--fs-body-sm);
+  font-weight: 700;
+  color: var(--c-primary-deep);
+}
+
+/* ② 点・線・面の段階バーチャート */
+.pv-bars {
+  display: grid;
+  gap: 0.85rem;
+}
+.pv-bar {
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+.pv-bar--highlight {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: var(--c-primary);
+}
+.pv-bar__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.pv-bar__ver {
+  font-family: var(--ff-display);
+  font-size: 1.25rem;
+  color: var(--c-ink);
+}
+.pv-bar__scope {
+  padding: 0.1rem 0.6rem;
+  border-radius: var(--r-full);
+  background: var(--c-primary);
+  color: var(--c-white);
+  font-size: var(--fs-label-badge);
+  font-weight: 700;
+}
+.pv-bar__pct {
+  margin-left: auto;
+  font-size: var(--fs-label-meta);
+  font-weight: 700;
+  color: var(--c-primary-strong);
+}
+.pv-bar__track {
+  height: 0.6rem;
+  border-radius: var(--r-full);
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin-bottom: 0.45rem;
+}
+.pv-bar__fill {
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--grad-accent);
+}
+.pv-bar__desc {
+  font-size: 0.78rem;
+  color: var(--c-ink-mute);
+  line-height: 1.6;
+}
+
+/* ③ AIデザインシステムの3層アーキテクチャ図 */
+.pv-arch {
+  display: grid;
+  gap: 0.65rem;
+}
+.pv-arch__node {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+.pv-arch__tag {
+  font-family: var(--ff-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--r-sm);
+  background: var(--c-secondary);
+  color: var(--c-white);
+}
+.pv-arch__node:nth-child(2) .pv-arch__tag {
+  background: var(--c-primary);
+}
+.pv-arch__node:nth-child(3) .pv-arch__tag {
+  background: var(--c-primary-strong);
+}
+.pv-arch__label {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+.pv-arch__sub {
+  font-size: 0.76rem;
+  color: var(--c-ink-mute);
+  margin-top: 0.15rem;
+}
+/* =========================================================================
+   1. LENSAhub特徴カード用グラデーション装飾（Chapter 2の .stat と統一）
+   ========================================================================= */
+.card--glow {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.85) 0%, rgba(224, 242, 254, 0.55) 100%);
+}
+/* 右上の水色オーブ（Chapter 2の .stat::after と同じ光表現） */
+.card--glow::after {
+  content: "";
+  position: absolute;
+  right: -2.5rem;
+  top: -2.5rem;
+  width: 9.5rem;
+  height: 9.5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.38), transparent 70%);
+  pointer-events: none;
+}
+/* 数字もChapter 2の .stat__value と同じ中抜き＋縦グラデーションに統一 */
+.card--glow .card__index {
+  position: relative;
+  font-size: 3rem;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(0, 102, 138, 1);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.3), rgba(56, 189, 248, 0) 85%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.card--glow .card__title,
+.card--glow .card__body {
+  position: relative;
+}
+
+/* =========================================================================
+   2. 左固定・スティッキー追従サイドメニュー（KV画像の上辺揃え）
+   ========================================================================= */
+.chapter-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+/* 右カラム先頭のKV画像は margin-top を 0 にし、左サイドメニューの上辺とピタッと揃える */
+.chapter-main {
+  min-width: 0;
+}
+.chapter-main > .chapter-hero:first-child {
+  margin-top: 0;
+}
+.chapter-main > .block:first-child {
+  margin-top: 0;
+}
+
+/* シンプルなテキストのみの縦並び目次 */
+.chapter-toc--side {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.chapter-toc__heading {
+  display: block;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid var(--c-line);
+}
+.chapter-toc--side .chapter-toc__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.chapter-toc--side .chapter-toc__link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-height: 0;
+  padding: 0.35rem 0;
+  border-bottom: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--c-ink-mute);
+  line-height: 1.45;
+  transition: color 200ms var(--ease), transform 200ms var(--ease);
+}
+.chapter-toc--side .chapter-toc__link:hover {
+  color: var(--c-primary-deep);
+  transform: translateX(3px);
+}
+.chapter-toc--side .chapter-toc__link.is-active {
+  color: var(--c-primary-strong);
+  font-weight: 800;
+}
+.chapter-toc--side .chapter-toc__link.is-active .chapter-toc__num {
+  color: var(--c-primary);
+}
+.chapter-toc--side .chapter-toc__sublist {
+  margin: 0.1rem 0 0.35rem 1.35rem;
+  padding-left: 0.65rem;
+  border-left: 1px solid var(--c-line);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.chapter-toc--side .chapter-toc__sublink {
+  display: block;
+  padding: 0.22rem 0;
+  border-bottom: 0;
+  font-size: 0.72rem;
+  color: var(--c-ink-mute);
+  line-height: 1.4;
+  transition: color 200ms var(--ease), transform 200ms var(--ease);
+}
+.chapter-toc--side .chapter-toc__sublink:hover {
+  color: var(--c-primary-deep);
+  transform: translateX(2px);
+}
+.chapter-toc--side .chapter-toc__sublink.is-active {
+  color: var(--c-primary-strong);
+  font-weight: 700;
+}
+
+/* PC幅（1024px以上）で左サイドバーとしてスティッキー固定 */
+@media (min-width: 1024px) {
+  .chapter-layout {
+    grid-template-columns: 13.5rem minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+  .chapter-sidebar {
+    position: sticky;
+    top: 5.25rem; /* 上部グローバルナビの下でピタッと止まって追従 */
+    max-height: calc(100vh - 6.5rem);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .chapter-sidebar::-webkit-scrollbar {
+    display: none;
+  }
+}
+/* =========================================================================
+   1. コンテンツ外側（左余白）の追従サイド目次 ＆ 自動ハンバーガー切替
+   ========================================================================= */
+.chapter-body-wrap {
+  position: relative;
+}
+
+/* コンテンツエリア（1280px）のすぐ外側・左余白に配置し、KV画像の上辺から追従 */
+.chapter-gutter-toc {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* 最左から適切な余白（最低1.5rem）を保ちつつ、.containerのすぐ左外側に配置 */
+  left: max(1.5rem, calc((100vw - var(--container-max)) / 2 - 12.5rem));
+  width: 11rem;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.chapter-gutter-toc > .chapter-toc--side {
+  position: sticky;
+  top: 5.25rem;
+  pointer-events: auto;
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease), visibility 220ms;
+}
+
+/* ハンバーガーボタン（初期は非表示、is-burger-mode 時に左上へ出現） */
+.toc-burger {
+  position: fixed;
+  top: 1.25rem;
+  left: var(--margin);
+  z-index: 85;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--r-full);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease), visibility 220ms, border-color 200ms var(--ease);
+}
+.toc-burger:hover {
+  border-color: var(--c-primary);
+}
+.toc-burger__bars {
+  display: inline-grid;
+  gap: 3px;
+  width: 14px;
+}
+.toc-burger__bars span {
+  display: block;
+  height: 1.5px;
+  width: 100%;
+  background: var(--c-secondary);
+  border-radius: 2px;
+}
+
+/* ドロワーパネル */
+.toc-drawer {
+  position: fixed;
+  top: 4.25rem;
+  left: var(--margin);
+  z-index: 86;
+  width: min(18rem, calc(100vw - 2.5rem));
+  max-height: calc(100vh - 5.5rem);
+  overflow-y: auto;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--r-lg);
+}
+.toc-drawer[hidden] {
+  display: none !important;
+}
+.toc-drawer__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--c-line);
+}
+.toc-drawer__close {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--c-ink-mute);
+}
+
+/* ★ウィンドウ幅が狭い時、またはフル幅Caseを跨いだ時の切替状態 */
+.chapter-toc-system.is-burger-mode .chapter-gutter-toc > .chapter-toc--side {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-10px);
+}
+.chapter-toc-system.is-burger-mode .toc-burger {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* =========================================================================
+   2. Chapter 1 Case Studies：フルWidth ＆ Before/After上下比較 ＋ 吹き出しApproach
+   ========================================================================= */
+/* 従来の .container の外に飛び出してフル幅（左右に少し余白を残す）にするラッパー */
+.case-fullbleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+}
+
+.case-fullbleed__box {
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+
+.case-fullbleed__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.case-fullbleed__btns {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ボックス内部の横スクロール領域 */
+.case-fullbleed__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.75rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.case-fullbleed__viewport::-webkit-scrollbar {
+  height: 8px;
+}
+.case-fullbleed__viewport::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.05);
+  border-radius: var(--r-full);
+}
+.case-fullbleed__viewport::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.45);
+  border-radius: var(--r-full);
+}
+.case-fullbleed__viewport::-webkit-scrollbar-thumb:hover {
+  background: var(--c-primary);
+}
+
+/* 上下比較ボード全体（中身に合わせて横に広がる） */
+.case-board {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* 上段（Before）と下段（After）の横長バンド */
+.case-band {
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+  padding: 1.15rem;
+  border-radius: var(--r-lg);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+}
+.case-band--before {
+  border-left: 4px solid rgba(15, 23, 42, 0.55);
+}
+.case-band--after {
+  background: rgba(255, 255, 255, 0.85);
+  border-left: 4px solid var(--c-primary);
+  box-shadow: 0 12px 32px -10px rgba(56, 189, 248, 0.2);
+}
+
+/* 左側のテキスト要点パネル（横スクロールしても左端にスティッキー追従して見比べやすい） */
+.case-band__info {
+  width: 21rem;
+  flex: 0 0 21rem;
+  position: sticky;
+  left: 0;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.15rem;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.case-band__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+.case-band__heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--c-ink);
+  margin: 0;
+}
+.case-band__points {
+  display: grid;
+  gap: 0.45rem;
+}
+.case-chip-point {
+  padding: 0.45rem 0.65rem;
+  border-radius: var(--r-sm);
+  background: rgba(240, 249, 255, 0.75);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  display: grid;
+  gap: 0.1rem;
+}
+.case-chip-point__title {
+  color: var(--c-primary-deep);
+  font-weight: 800;
+}
+.case-chip-point__body {
+  color: var(--c-ink-mute);
+}
+
+/* 右側に横一列で並ぶ画像群（BeforeとAfterで列幅を揃えて上下比較しやすくする） */
+.case-band__visuals {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+}
+.case-shot {
+  width: 22rem;
+  flex: 0 0 22rem;
+  display: flex;
+}
+.case-shot .figure {
+  width: 100%;
+  justify-content: space-between;
+}
+.case-shot .figure__frame img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: left top;
+}
+
+/* 中段に挟まる「アプローチ吹き出し（Callout Bubble）」 */
+.case-bubble-row {
+  padding-left: 1rem;
+  position: relative;
+}
+.case-bubble {
+  position: sticky;
+  left: 0.5rem;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: min(76rem, calc(100vw - 5rem));
+  padding: 1rem 1.35rem;
+  border-radius: var(--r-lg);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.9));
+  border: 1.5px solid var(--c-primary);
+  box-shadow: 0 10px 28px -8px rgba(56, 189, 248, 0.28);
+}
+/* 吹き出しの下向き三角しっぽ（BeforeからAfterへの変換を示す） */
+.case-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -9px;
+  left: 3rem;
+  width: 16px;
+  height: 16px;
+  background: rgba(224, 242, 254, 0.95);
+  border-right: 1.5px solid var(--c-primary);
+  border-bottom: 1.5px solid var(--c-primary);
+  transform: rotate(45deg);
+}
+.case-bubble__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.case-bubble__heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--c-ink);
+}
+.case-bubble__arrow {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--c-primary-strong);
+}
+.case-bubble__pills {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.65rem;
+}
+.case-bubble__pill {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+.case-bubble__num {
+  font-family: var(--ff-display);
+  font-size: 1.1rem;
+  color: var(--c-primary);
+  line-height: 1;
+}
+.case-bubble__pill strong {
+  display: block;
+  font-size: 0.8rem;
+  margin-bottom: 0.1rem;
+}
+.case-bubble__pill p {
+  color: var(--c-ink-mute);
+}
+/* =========================================================================
+   最終補正：コンテンツ位置を動かさない左余白サイド目次 ＆ ハンバーガーボタン修正
+   ========================================================================= */
+
+.chapter-body-wrap {
+  position: relative;
+}
+
+/* コンテンツ（.chapter-main）は通常の .container 中央配置のまま、左外側の余白に目次を浮かせる */
+.chapter-gutter-toc {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: max(1.25rem, calc((100vw - var(--container-max)) / 2 - 12rem));
+  width: 11rem;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.chapter-gutter-toc > .chapter-toc--side {
+  position: sticky;
+  top: 5.25rem;
+  pointer-events: auto;
+  max-height: calc(100vh - 6.5rem);
+  overflow-y: auto;
+  scrollbar-width: none;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease), visibility 220ms;
+}
+.chapter-gutter-toc > .chapter-toc--side::-webkit-scrollbar {
+  display: none;
+}
+
+/* 途中で切れていたハンバーガーボタン（.toc-burger）のスタイルを完全定義 */
+.toc-burger {
+  position: fixed;
+  top: 1.25rem;
+  left: var(--margin);
+  z-index: 85;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--r-full);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--c-secondary);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease), visibility 220ms, border-color 200ms var(--ease);
+}
+.toc-burger:hover {
+  border-color: var(--c-primary);
+}
+.toc-burger__bars {
+  display: inline-grid;
+  gap: 3px;
+  width: 14px;
+}
+.toc-burger__bars span {
+  display: block;
+  height: 1.5px;
+  width: 100%;
+  background: var(--c-secondary);
+  border-radius: 2px;
+}
+
+/* ウィンドウ幅が狭くて左余白がない時、またはフル幅Caseを跨いだ時はハンバーガーへ自動切替 */
+.chapter-toc-system.is-burger-mode .chapter-gutter-toc > .chapter-toc--side {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateX(-10px) !important;
+}
+.chapter-toc-system.is-burger-mode .toc-burger {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: translateY(0) !important;
+}
+/* =========================================================================
+   Case 01〜03 ボックス内左端タイトル統合 ＆ 各Case別画像トリミング最適化
+   ========================================================================= */
+
+/* 1. フルWidthボックス最上部にCaseタイトルを左端揃えで格納 */
+.case-fullbleed__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-md) var(--space-xl);
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.case__head--in-box {
+  margin-bottom: 0;
+}
+
+.case-fullbleed__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-left: auto;
+}
+
+/* 2. Case 01：トリミングせず全体を縮小表示（contain）＋ 横向きの画面遷移矢印 */
+.case-shot--case-1 {
+  width: 21rem;
+  flex: 0 0 21rem;
+}
+.case-shot--case-1 .figure__frame {
+  background: #f8fafc;
+  padding: 0.35rem;
+}
+.case-shot--case-1 .figure__frame img {
+  aspect-ratio: 16 / 10;
+  object-fit: contain !important; /* ★削れる部分がないよう全体を表示 */
+  object-position: center center !important;
+  background: #ffffff;
+}
+.case-shot--case-1 .dummy {
+  aspect-ratio: 16 / 10;
+  height: 100%;
+}
+
+/* 画像と画像の間に入る横向きの遷移矢印（→） */
+.case-flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 2.25rem;
+  align-self: center;
+}
+.case-flow-arrow__icon {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: var(--c-primary);
+  color: var(--c-white);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.38);
+}
+
+/* 3. Case 02：1枚目（サイドナビ全体）だけを縦長にし、Before/Afterの対の画像サイズを完全統一 */
+/* 1枚目：サイドナビ全体（Before① / After① を同じ幅・同じ縦長高さに揃える） */
+.case-shot--sidenav {
+  width: 15.5rem;
+  flex: 0 0 15.5rem;
+}
+.case-shot--sidenav .figure__frame {
+  background: #f8fafc;
+  padding: 0.35rem;
+}
+.case-shot--sidenav .figure__frame img {
+  aspect-ratio: 9 / 16 !important; /* ★縦長のサイドナビ全体がしっかり見える比率 */
+  height: 21rem;
+  width: 100%;
+  object-fit: contain !important;
+  object-position: top center !important;
+  background: #ffffff;
+}
+
+/* 2・3枚目：対になる部分キャプチャ（Before②とAfter②、Before③とAfter③のサイズを完全統一） */
+.case-shot--case-2:not(.case-shot--sidenav) {
+  width: 21rem;
+  flex: 0 0 21rem;
+}
+.case-shot--case-2:not(.case-shot--sidenav) .figure__frame {
+  background: #f8fafc;
+  padding: 0.35rem;
+}
+.case-shot--case-2:not(.case-shot--sidenav) .figure__frame img {
+  aspect-ratio: 16 / 10 !important;
+  height: 13.125rem; /* 幅21remに対する16:10の固定高でBefore/Afterをピタッと揃える */
+  width: 100%;
+  background: #ffffff;
+}
+
+/* 4. Case 03：高さが低くなっても画像全体が見えるようにトリミングを最小限（contain）にする */
+.case-shot--case-3 {
+  width: 24rem;
+  flex: 0 0 24rem;
+}
+.case-shot--case-3 .figure__frame {
+  background: #f8fafc;
+  padding: 0.35rem;
+}
+.case-shot--case-3 .figure__frame img {
+  aspect-ratio: 16 / 9; /* 横長の一覧画面やアイコン14個が収まりやすい比率 */
+  max-height: 12.5rem;  /* 高さを抑えてスッキリ見せる */
+  width: 100%;
+  object-fit: contain !important; /* ★見切れ・トリミングなしで全体を表示 */
+  object-position: center center !important;
+  background: #ffffff;
+}
+
+/* 各Case画像の下の説明文（desc）をコンパクトに整える */
+.case-shot .figure {
+  justify-content: flex-start;
+  gap: 0.4rem;
+}
+.case-shot .figure__desc {
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: var(--c-ink-mute);
+}
+/* =========================================================================
+   1. 背景スケッチを縦長PNG（bg_sketch.png）に変更 ＆ 右寄せ配置
+   ========================================================================= */
+.ambient__sketch {
+  position: absolute;
+  inset: 0;
+  background-image: url("../assets/images/bg_sketch.png") !important;
+  background-repeat: no-repeat !important;
+  /* ★右寄りに配置（右端から少し内側・上下中央） */
+  background-position: right clamp(1rem, 5vw, 5rem) center !important;
+  /* ★縦長プロポーションを活かし、画面高さに合わせて全体を表示 */
+  background-size: auto 120vh !important;
+  opacity: 0.32;
+  filter: blur(0px);
+  transform: scale(1);
+  transition: filter 600ms var(--ease), opacity 600ms var(--ease), transform 800ms var(--ease);
+}
+
+/* KV通過後（コンテンツ領域に入ったとき）のぼかし状態 */
+body.is-bg-blurred .ambient__sketch {
+  filter: blur(7px);
+  opacity: 0.18;
+  transform: scale(1.02);
+}
+
+@media (max-width: 767px) {
+  .ambient__sketch {
+    background-position: right -1rem top 3.5rem !important;
+    background-size: auto 78vh !important;
+  }
+}
+
+/* =========================================================================
+   2. アプローチ吹き出し（Callout Bubble）内のカードを横一列（3列）に固定
+   ========================================================================= */
+.case-bubble {
+  /* 3枚が横一列にゆったり並べるよう横幅を確保 */
+  width: min(82rem, calc(100vw - 4.5rem));
+  max-width: min(82rem, calc(100vw - 4.5rem));
+}
+
+.case-bubble__pills {
+  display: grid;
+  /* ★2段に折り返さず、3枚のカードを横一列に並べる */
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.case-bubble__pill {
+  min-width: 0;
+}
+
+/* スマホの狭い画面で横スクロールしない場合のみ、最低限の横幅を保って横並び維持 */
+@media (max-width: 639px) {
+  .case-bubble {
+    width: 54rem;
+    max-width: none;
+  }
+}
+/* =========================================================================
+   Lightbox（画像拡大表示）のサイズ補正 ＆ SVGの拡大対応
+   ========================================================================= */
+
+/* ライトボックスのパネル自体を画面いっぱいに大きく広げる */
+.lightbox__panel {
+  width: 90vw !important;
+  max-width: 1200px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 中の画像（特にSVG）が縮まないよう、パネル幅いっぱいに広げる */
+.lightbox__img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 82vh !important; /* 縦方向にはみ出さないよう制限 */
+  object-fit: contain !important;
+  background: #f8fafc !important; /* 透過のSVGでも見やすいよう白背景を敷く */
+  border-radius: calc(var(--r-lg) - 2px) calc(var(--r-lg) - 2px) 0 0 !important;
+}
+
+/* 拡大時のキャプション（テキスト）のレイアウト調整 */
+.lightbox__caption {
+  width: 100%;
+  padding: 0.85rem 1.25rem !important;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--c-ink);
+  margin: 0;
+  border-top: 1px solid var(--c-line);
+}
+/* =========================================================================
+   Chapter 3: LP Cases (Blur & Placeholder support) / Seminar Banner Gallery
+   ========================================================================= */
+
+/* ---------- 1. 超短納期LP制作カード ---------- */
+.lp-cases {
+  display: grid;
+  gap: var(--gutter);
+}
+
+.lp-card {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  align-items: start;
+}
+
+@media (min-width: 960px) {
+  .lp-card {
+    grid-template-columns: 1fr 1.15fr;
+  }
+}
+
+.lp-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lp-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.lp-card__num {
+  font-family: var(--ff-display);
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--c-primary);
+  margin-right: 0.25rem;
+}
+
+.lp-card__title {
+  font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.lp-card__role {
+  font-size: var(--fs-body-sm);
+  color: var(--c-primary-deep);
+  background: rgba(240, 249, 255, 0.8);
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--c-primary);
+}
+
+.lp-card__body {
+  color: var(--c-ink-soft);
+  line-height: 1.9;
+  font-size: var(--fs-body-md);
+}
+
+.lp-card__note {
+  margin-top: 0.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--r-md);
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px dashed rgba(15, 23, 42, 0.22);
+  font-size: 0.78rem;
+  color: var(--c-ink-mute);
+  line-height: 1.75;
+}
+
+/* LPのスクリーンショット枠（2枚横並び） */
+.lp-card__visuals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.lp-shot__frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 11;
+  background: #f8fafc;
+  display: grid;
+  place-items: center;
+}
+
+.lp-shot__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 400ms var(--ease), filter 400ms var(--ease);
+}
+
+/* クライアント規約によるブラー（ぼかし）処理 */
+.lp-shot__frame img.is-blurred-img {
+  filter: blur(10px) saturate(0.95);
+  transform: scale(1.06); /* 端のボケ欠け防止 */
+  pointer-events: none;
+  user-select: none;
+}
+
+.lp-shot__frame--Confidential {
+  cursor: default !important;
+}
+.lp-shot__frame--Confidential:hover {
+  transform: none !important;
+}
+
+/* ブラー画像の上に重なる「面接時限定公開」ロックオーバーレイ */
+.lp-shot__lock {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.22);
+  pointer-events: none;
+}
+
+.lp-shot__lock-badge {
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--r-full);
+  background: rgba(15, 23, 42, 0.82);
+  color: var(--c-white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+}
+
+/* 画像ファイルをまだフォルダに入れていない時の自動プレースホルダー表示 */
+.lp-shot__placeholder {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1.25rem;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,0.6) 0 14px, rgba(224,242,254,0.6) 14px 28px);
+}
+
+.lp-shot__path {
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: var(--c-ink-mute);
+  word-break: break-all;
+}
+
+.lp-shot__frame.is-missing-img img {
+  display: none;
+}
+.lp-shot__frame.is-missing-img .lp-shot__placeholder {
+  display: flex;
+}
+
+/* ---------- 2. ウェビナーバナー制作ギャラリー（長方形＋正方形ペア） ---------- */
+.banner-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gutter);
+}
+
+@media (min-width: 900px) {
+  .banner-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.banner-pair {
+  padding: clamp(1.15rem, 2.2vw, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.banner-pair__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.banner-pair__date {
+  color: var(--c-primary-strong);
+  font-weight: 700;
+}
+
+.banner-pair__title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--c-ink);
+  margin: 0;
+}
+
+/* 長方形（384:230 ≒ 1.67:1）と 正方形（1:1）を同じ高さで美しく並べるグリッド */
+.banner-pair__images {
+  display: grid;
+  grid-template-columns: 1.62fr 1fr;
+  gap: 0.85rem;
+  align-items: start;
+}
+
+.banner-pair__item .figure__frame {
+  padding: 0.3rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.banner-pair__item--rect .figure__frame img {
+  aspect-ratio: 384 / 230;
+  object-fit: contain;
+  width: 100%;
+  display: block;
+}
+
+.banner-pair__item--sq .figure__frame img {
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  width: 100%;
+  display: block;
+}
+
+.banner-pair__item .figure__caption {
+  font-size: 0.7rem;
+  color: var(--c-ink-mute);
+  text-align: center;
+  font-weight: 600;
+}
+
+.banner-copyright {
+  margin-top: var(--space-lg);
+  text-align: right;
+  font-size: 0.78rem;
+  color: var(--c-ink-mute);
+}
+/* =========================================================================
+   Chapter 4: Graphic & Visual Design（interaction展 / countershading）画像最適化
+   ========================================================================= */
+
+/* interaction展（PDF p.5〜12のスライドや空間・制作物）を見切れなしで全体表示 */
+.case-shot--case-vi {
+  width: 23rem;
+  flex: 0 0 23rem;
+}
+.case-shot--case-vi .figure__frame {
+  background: #f8fafc;
+  padding: 0.35rem;
+}
+.case-shot--case-vi .figure__frame img {
+  aspect-ratio: 16 / 10;
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: #ffffff;
+}
+
+/* countershading（PDF p.28〜30：縦長ポスターや見開きスライド）をゆったり大きく全体表示 */
+.case-shot--case-poster {
+  width: 22rem;
+  flex: 0 0 22rem;
+}
+.case-shot--case-poster .figure__frame {
+  background: #f8fafc;
+  padding: 0.4rem;
+}
+.case-shot--case-poster .figure__frame img {
+  aspect-ratio: 4 / 3;
+  max-height: 18rem;
+  object-fit: contain !important;
+  object-position: center center !important;
+  background: #ffffff;
+}
+/* =========================================================================
+   1. TOPページ「CHAPTERS →」見出しリンク（Chapter 1へ遷移）
+   ========================================================================= */
+.chapters-heading-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: var(--c-ink);
+  text-decoration: none;
+  transition: color 250ms var(--ease);
+}
+
+.chapters-heading-link__arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid var(--c-primary);
+  color: var(--c-primary-strong);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 6px 18px -4px rgba(56, 189, 248, 0.28);
+  transition: transform 280ms var(--ease), background 280ms var(--ease), color 280ms var(--ease), box-shadow 280ms var(--ease);
+}
+
+.chapters-heading-link:hover {
+  color: var(--c-primary-deep);
+}
+
+.chapters-heading-link:hover .chapters-heading-link__arrow {
+  background: var(--grad-accent);
+  border-color: transparent;
+  color: var(--c-white);
+  transform: translateX(6px);
+  box-shadow: 0 10px 24px -4px rgba(56, 189, 248, 0.45);
+}
+
+/* =========================================================================
+   2. AIワークフロー等のステップ図を「>>>（傾斜・重なりシェブロン）」に刷新
+   ========================================================================= */
+@media (min-width: 640px) {
+  .pv-flow__steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0 !important;
+    padding-right: 0.5rem;
+  }
+
+  .pv-step {
+    position: relative;
+    border-radius: 0 !important;
+    border: none !important;
+    /* 1ステップ目：右端を > 型に切り出す */
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%);
+    padding: 1.05rem 1.4rem 1.05rem 1.1rem !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(224, 242, 254, 0.85)) !important;
+    filter: drop-shadow(0 4px 10px rgba(15, 23, 42, 0.06));
+    transition: transform 250ms var(--ease);
+  }
+
+  /* 2ステップ目以降：左端も > 型にへこませ、左の要素に少し重ねて >>> の連なりを作る */
+  .pv-step:not(:first-child) {
+    margin-left: -10px;
+    padding-left: 1.65rem !important;
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 50%, calc(100% - 18px) 100%, 0 100%, 18px 50%);
+  }
+
+  /* ステップが進むごとにシアンブルーの濃度を少しずつ上げて流れを強調 */
+  .pv-step:nth-child(2) {
+    background: linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(186, 230, 253, 0.85)) !important;
+  }
+  .pv-step:nth-child(3) {
+    background: linear-gradient(135deg, rgba(224, 242, 254, 0.96), rgba(125, 211, 252, 0.82)) !important;
+  }
+  .pv-step:nth-child(4) {
+    background: linear-gradient(135deg, rgba(186, 230, 253, 0.96), rgba(56, 189, 248, 0.78)) !important;
+  }
+
+  .pv-step:hover {
+    transform: translateY(-2px);
+    z-index: 5;
+  }
+}
+
+/* =========================================================================
+   3. Chapter 4（グラフィック・基礎造形）の囲み・ボタン感を減らしたシンプル化
+   ========================================================================= */
+
+/* 外枠の重いガラス背景やボーダーを控えめにし、すっきり見せる */
+#view-chapter-4 .case-fullbleed__box {
+  background: rgba(255, 255, 255, 0.42);
+  border-color: var(--c-line-soft);
+  box-shadow: none;
+}
+
+/* 上段・下段バンドの箱囲みをなくし、繊細な下線区切りのみにする */
+#view-chapter-4 .case-band {
+  background: transparent;
+  border: 0;
+  border-left: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding-inline: 0.25rem;
+}
+
+/* 左のテキストパネルも箱の枠線や背景をなくし、クリーンなタイポグラフィに */
+#view-chapter-4 .case-band__info {
+  background: rgba(255, 255, 255, 0.78);
+  border: 0;
+  border-right: 1px solid var(--c-line);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0.5rem 1.25rem 0.5rem 0.25rem;
+}
+
+/* ボタンのように見えていたバッジ（CONCEPT等）を囲みなしのシンプルな英字ラベルにする */
+#view-chapter-4 .badge {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  color: var(--c-primary-strong) !important;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  box-shadow: none !important;
+}
+
+/* 各ポイントの小箱（背景色・角丸）をなくし、左の細いラインだけでシンプルに整理 */
+#view-chapter-4 .case-chip-point {
+  background: transparent;
+  border: 0;
+  border-left: 2px solid var(--c-line);
+  border-radius: 0;
+  padding: 0.15rem 0 0.15rem 0.75rem;
+}
+
+/* 中段のアプローチ吹き出しも、太い枠線や三角しっぽ・内部の小カード囲みをなくしてフラットに */
+#view-chapter-4 .case-bubble {
+  background: rgba(255, 255, 255, 0.45);
+  border: 0;
+  border-block: 1px solid var(--c-line);
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1rem 0.5rem;
+}
+#view-chapter-4 .case-bubble::after {
+  display: none;
+}
+#view-chapter-4 .case-bubble__pill {
+  background: transparent;
+  border: 0;
+  border-left: 2px solid var(--c-primary);
+  border-radius: 0;
+  padding: 0.15rem 0 0.15rem 0.75rem;
+}
+
+/* 作品画像のフレームも枠線や背景の箱感を最小限にし、作品そのものが際立つように */
+#view-chapter-4 .figure__frame {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+#view-chapter-4 .figure__frame img {
+  border-radius: var(--r-sm);
+}
+/* =========================================================================
+   最終ブラッシュアップ：TOP矢印のシンプル化 ／ Chapter 4 余白＆通常幅対応
+   ========================================================================= */
+
+/* 1. TOP「CHAPTERS →」の矢印を丸ボタンではなくシンプルなトンマナ文字矢印に変更 */
+.chapters-heading-link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  color: var(--c-ink);
+  text-decoration: none;
+}
+
+.chapters-heading-link__arrow {
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-family: var(--ff-body);
+  font-size: 0.85em;
+  font-weight: 400;
+  color: var(--c-primary-strong) !important;
+  transition: transform 240ms var(--ease), color 240ms var(--ease);
+}
+
+.chapters-heading-link:hover .chapters-heading-link__arrow {
+  background: transparent !important;
+  color: var(--c-primary) !important;
+  box-shadow: none !important;
+  transform: translateX(6px);
+}
+
+/* 2. Chapter 4：CONCEPT & MOTIF / MEDIA EXPANSION 等のボックス内部の余白をしっかり確保 */
+#view-chapter-4 .case-fullbleed__box {
+  padding: clamp(1.75rem, 3.5vw, 2.75rem) !important;
+}
+
+#view-chapter-4 .case-band {
+  padding: 1.5rem 1.25rem !important;
+  gap: 1.75rem !important;
+}
+
+#view-chapter-4 .case-band__info {
+  padding: 1.35rem 1.6rem !important;
+  gap: 1rem !important;
+  border-radius: var(--r-md) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid var(--c-line-soft) !important;
+}
+
+#view-chapter-4 .case-chip-point {
+  padding: 0.35rem 0 0.35rem 0.9rem !important;
+  gap: 0.25rem !important;
+}
+
+/* 3. Chapter 4：作品説明（中間アプローチ部分）の背景ボックスを完全に無くしてシンプルに */
+#view-chapter-4 .case-bubble-row {
+  padding: 0.5rem 1.25rem !important;
+}
+
+#view-chapter-4 .case-bubble {
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0.75rem 0.25rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#view-chapter-4 .case-bubble__pills {
+  margin-top: 0.25rem;
+  gap: 1.25rem !important;
+}
+
+#view-chapter-4 .case-bubble__pill {
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 2px solid var(--c-primary) !important;
+  padding: 0.25rem 0 0.25rem 0.9rem !important;
+}
+
+/* 4. イカのポスター（case-poster）：通常のコンテンツエリア幅に収める設定 */
+.case-contained {
+  width: 100%;
+  margin: 0;
+}
+
+/* 通常幅のイカポスター内では横にはみ出さず、コンテナ幅100%で整然と並べる */
+.case--case-poster .case-board {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.case--case-poster .case-band {
+  flex-wrap: wrap;
+}
+
+@media (min-width: 900px) {
+  .case--case-poster .case-band {
+    flex-wrap: nowrap;
+  }
+}
+
+.case--case-poster .case-band__info {
+  position: relative !important;
+  left: auto !important;
+  width: 19.5rem;
+  flex: 0 0 19.5rem;
+}
+
+.case--case-poster .case-band__visuals {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1.25rem;
+}
+
+.case-shot--case-poster {
+  width: 100% !important;
+  flex: 1 1 auto !important;
+}
+
+.case-shot--case-poster .figure__frame img {
+  aspect-ratio: 4 / 3;
+  max-height: 19rem;
+  width: 100%;
+  object-fit: contain !important;
 }
